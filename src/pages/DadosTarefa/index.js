@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
       fontSize: 30,
       paddingTop: 10,
       paddingBottom: 10,
-      color: '#0000FF',
+      color: '#F92E6A',
       fontWeight: 'bold'
   },
   linhaDado:{

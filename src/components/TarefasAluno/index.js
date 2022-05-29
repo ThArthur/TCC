@@ -14,7 +14,7 @@ export default function TarefasAluno(props){
     <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Relatório')} >
         <Text style={styles.textAluno}>{props.tarefa}</Text>
         <Text style={styles.textAlunoData}>{props.dataTarefa}</Text>
-        <FontAwesome style={styles.svg} name='caret-right' size={35} color="#0000FF"/>
+        <FontAwesome style={styles.svg} name='caret-right' size={35} color="#F92E6A"/>
     </TouchableOpacity>
   );
 }
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        borderBottomWidth: 2,
+        borderBottomWidth: .5,
         height: 50,
         justifyContent: 'space-between'
     },
@@ -37,7 +37,4 @@ const styles = StyleSheet.create({
     svg:{
         paddingRight: 20,        
     },
-    textAlunoData:{
-        
-    }
 })

@@ -1,21 +1,19 @@
-import React, { useState, useEffect,  } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import firebase from '../../connection/firebaseConnection';
 
-export default function CriarAluno({route}){
+export default function CriarAtividade({route}){
 
   const navigation = useNavigation();
 
-
   const [nome, setNome] = useState("");
-  const [idade, setIdade] = useState("");
 
   async function criarAluno() {
     console.log('1')
     await firebase.firestore().collection('alunos').add({
-      nome: nome,
-      idade: idade,
+      nomeAtividade: nome,
+      tipoAtividade: idade,
     }).then(() => {
       setNome('');
       setIdade('');
@@ -36,19 +34,17 @@ export default function CriarAluno({route}){
 
   return(
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-      <Text style={styles.textTittle}>Cadastre o aluno:</Text>
-      <TextInput style={styles.input} placeholder="Digite nome do aluno" type="text" onChangeText={(text) => setNome(text)} value={nome}></TextInput>
-      <TextInput style={styles.inputNumeric} placeholder="idade" keyboardType='numeric' onChangeText={(text) => setIdade(text)} value={idade}></TextInput>
-  
+      <Text style={styles.textTittle}>Crie uma atividade: </Text>
+      <TextInput style={styles.input} placeholder="Digite nome da atividade" type="text" onChangeText={(text) => setNome(text)} value={nome}></TextInput>
       {
-        nome === "" || idade === "" 
+        nome === ""
         ?
         <TouchableOpacity disabled={true} style={styles.buttonLogin}>
-          <Text style={styles.textButton}>Criar aluno</Text>
+          <Text style={styles.textButton}>Próximo</Text>
         </TouchableOpacity>
         :
-        <TouchableOpacity onPress={ criarAluno } style={styles.buttonLogin}>
-          <Text style={styles.textButton}>Criar aluno</Text>
+        <TouchableOpacity onPress={ criarAluno } style={styles.buttonLogin} onPress={() => navigation.navigate("Escolher atividade", nome)}>
+          <Text style={styles.textButton}>Próximo</Text>
         </TouchableOpacity>
       }
       <View style={{height: 100}}/>

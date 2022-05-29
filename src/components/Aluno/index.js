@@ -10,11 +10,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 export default function Aluno(props){
     
   const navigation = useNavigation();
-
   return(
-    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Dados Aluno')} >
+    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Dados Aluno', props.idAluno)} >
         <Text style={styles.textAluno}>{props.nome}</Text>
-        <FontAwesome style={styles.svg} name='caret-right' size={35} color="#0000FF"/>
+        <FontAwesome style={styles.svg} name='caret-right' size={35} color="#F92E6A"/>
     </TouchableOpacity>
   );
 }
@@ -24,7 +23,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        borderBottomWidth: 2,
+        borderBottomWidth: .5,
         height: 50,
         justifyContent: 'space-between'
     },

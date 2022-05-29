@@ -3,54 +3,53 @@ import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView, TextInp
 import { useNavigation } from '@react-navigation/native';
 import firebase from '../../connection/firebaseConnection';
 
-export default function CriarAluno({route}){
+export default function CadastroOrientador(){
 
   const navigation = useNavigation();
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [nome, setNome] = useState("");
-  const [idade, setIdade] = useState("");
-
-  async function criarAluno() {
-    console.log('1')
-    await firebase.firestore().collection('alunos').add({
-      nome: nome,
-      idade: idade,
-    }).then(() => {
-      setNome('');
-      setIdade('');
-      console.log('Entrou no Then')
-      navigation.goBack();
-    }).catch((error) => {
-      console.log(error);
+  const loginFirebase = () => {
+    firebase.auth().createUserWithEmailAndPassword(email, password).then((userCredential) => {
       
-      console.log('Entrou no Error')
-    })
-
-    console.log('2')
+      let user = userCredential.user;
+      navigation.navigate("Lista de alunos", { idUser: user.uid })
+      
+    }).catch((error) => {
+      let errorCode = error.code;
+      let errorMessage = error.message;
+    });
   }
 
   useEffect( () => {
-
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        navigation.navigate("Lista de alunos", { idUser: user.uid });
+      }
+    });
   }, []);
 
   return(
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-      <Text style={styles.textTittle}>Cadastre o aluno:</Text>
-      <TextInput style={styles.input} placeholder="Digite nome do aluno" type="text" onChangeText={(text) => setNome(text)} value={nome}></TextInput>
-      <TextInput style={styles.inputNumeric} placeholder="idade" keyboardType='numeric' onChangeText={(text) => setIdade(text)} value={idade}></TextInput>
+      <Text style={styles.tittle}>Cadastrar conta</Text>
+      <TextInput style={styles.input} placeholder="Digite seu email" type="text" onChangeText={(text) => setEmail(text)} value={email}></TextInput>
+      <TextInput secureTextEntry={true} style={styles.input} placeholder="Digite sua senha" type="password" onChangeText={(text) => setPassword(text)} value={password}></TextInput>
   
       {
-        nome === "" || idade === "" 
+        email === "" || password === "" 
         ?
         <TouchableOpacity disabled={true} style={styles.buttonLogin}>
-          <Text style={styles.textButton}>Criar aluno</Text>
+          <Text style={styles.textButton}>Entrar</Text>
         </TouchableOpacity>
         :
-        <TouchableOpacity onPress={ criarAluno } style={styles.buttonLogin}>
-          <Text style={styles.textButton}>Criar aluno</Text>
+        <TouchableOpacity onPress={ loginFirebase } style={styles.buttonLogin}>
+          <Text style={styles.textButton}>Entrar</Text>
         </TouchableOpacity>
       }
+      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.buttonCriarConta}>
+          <Text style={styles.textButtonCadastro}>Já tem uma conta? Login...</Text>
+      </TouchableOpacity>
       <View style={{height: 100}}/>
     </KeyboardAvoidingView>
   );
@@ -101,23 +100,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
     color: '#000000'
-  },
-  inputNumeric:{
-    width: 100,
-    marginTop: 10,
-    padding: 10,
-    height: 50,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F92E6A',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    color: '#4D5156',
-    textAlign: 'center',
-  },
-  textTittle:{
-    fontSize: 25,
-    paddingBottom: 10,
-    color: '#F92E6A',
-    fontWeight: 'bold'
   }
 })
