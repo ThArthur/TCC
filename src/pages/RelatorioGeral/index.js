@@ -1,14 +1,32 @@
 import React from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 
 
-export default function RelatorioGeral(){
+export default function RelatorioGeral({route}){
+
+  const {
+    data
+  } = route.params;
+
+  function totalAcertos() {
+    let acertos = 0;
+    let tentativas = 0;
+    let erros = 0;
+    for(let i = 0; i < data.length; i++) {
+      acertos += data[i]?.task?.acertos;
+      tentativas += data[i]?.task?.tentativas;
+      erros += data[i]?.task?.erros;
+    }
+
+    return { acertos, tentativas, erros }
+  }
+
 
   const tarefas = 
     {
-      tentativas: '100',
-      acertos: '65',
-      erros: '35',
+      tentativas: totalAcertos().tentativas,
+      acertos: totalAcertos().acertos,
+      erros: totalAcertos().erros,
       acertoPorc: '65%',
       erroPorc: '35%',
     }

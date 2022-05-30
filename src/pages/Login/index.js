@@ -1,54 +1,54 @@
-import React, { useState, useEffect,  } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView, TextInput } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { 
+  StyleSheet, 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  KeyboardAvoidingView, 
+  TextInput,
+  ActivityIndicator
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import firebase from '../../connection/firebaseConnection';
+import { AuthContext } from '../../context/auth';
 
 export default function Login(){
 
+  const { handleSignInAccount } = useContext(AuthContext)
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const loginFirebase = () => {
-    firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
-      
-      let user = userCredential.user;
-      navigation.navigate("Lista de alunos", { idUser: user.uid })
-      
-    }).catch((error) => {
-      let errorCode = error.code;
-      let errorMessage = error.message;
-    });
+  async function handleSignInAccounts() {
+    setLoading(true)
+    try {
+      await handleSignInAccount(email, password)
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false)
+    }
   }
-
-  useEffect( () => {
-
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        navigation.navigate("Lista de alunos", { idUser: user.uid });
-      }
-    });
-
-  }, []);
 
   return(
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <Text style={styles.tittle}>My Math</Text>
       <TextInput style={styles.input} placeholder="Digite seu email" type="text" onChangeText={(text) => setEmail(text)} value={email}></TextInput>
       <TextInput secureTextEntry={true} style={styles.input} placeholder="Digite sua senha" type="password" onChangeText={(text) => setPassword(text)} value={password}></TextInput>
-  
-      {
-        email === "" || password === "" 
-        ?
-        <TouchableOpacity disabled={true} style={styles.buttonLogin}>
-          <Text style={styles.textButton}>Entrar</Text>
-        </TouchableOpacity>
-        :
-        <TouchableOpacity onPress={ loginFirebase } style={styles.buttonLogin}>
-          <Text style={styles.textButton}>Entrar</Text>
-        </TouchableOpacity>
-      }
+
+      <TouchableOpacity 
+      onPress={handleSignInAccounts}
+      disabled={email.length <= 0 || password.length <= 0} 
+      style={[styles.buttonLogin, {
+        backgroundColor: email.length <= 0 || password.length <= 0 ? 'rgba(249, 46, 106, 0.5)' : '#F92E6A' 
+      }]}
+      >
+        {loading ?
+         <ActivityIndicator size={25} color='#FFF' />
+        : <Text style={styles.textButton}>Entrar</Text>}
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => navigation.navigate('Cadastro Orientador')} style={styles.buttonCriarConta}>
           <Text style={styles.textButtonCadastro}>Não tem uma conta? Cadastre-se</Text>
       </TouchableOpacity>

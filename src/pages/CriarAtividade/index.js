@@ -1,52 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import firebase from '../../connection/firebaseConnection';
 
 export default function CriarAtividade({route}){
 
   const navigation = useNavigation();
 
-  const [nome, setNome] = useState("");
-
-  async function criarAluno() {
-    console.log('1')
-    await firebase.firestore().collection('alunos').add({
-      nomeAtividade: nome,
-      tipoAtividade: idade,
-    }).then(() => {
-      setNome('');
-      setIdade('');
-      console.log('Entrou no Then')
-      navigation.goBack();
-    }).catch((error) => {
-      console.log(error);
-      
-      console.log('Entrou no Error')
-    })
-
-    console.log('2')
-  }
-
-  useEffect( () => {
-
-  }, []);
+  const [nome, setNome] = useState('');
+  const { data } = route.params;
 
   return(
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <Text style={styles.textTittle}>Crie uma atividade: </Text>
-      <TextInput style={styles.input} placeholder="Digite nome da atividade" type="text" onChangeText={(text) => setNome(text)} value={nome}></TextInput>
-      {
-        nome === ""
-        ?
-        <TouchableOpacity disabled={true} style={styles.buttonLogin}>
-          <Text style={styles.textButton}>Próximo</Text>
-        </TouchableOpacity>
-        :
-        <TouchableOpacity onPress={ criarAluno } style={styles.buttonLogin} onPress={() => navigation.navigate("Escolher atividade", nome)}>
-          <Text style={styles.textButton}>Próximo</Text>
-        </TouchableOpacity>
+      
+      <TextInput 
+        style={styles.input} 
+        placeholder="Digite nome da atividade" 
+        type="text" 
+        onChangeText={setNome} 
+        value={nome}
+      />
+
+      {nome.length <= 0 &&
+        <Text 
+        style={styles.textError}
+        >Digite um nome para criar uma tarefa!</Text>
       }
+
+      <TouchableOpacity style={[styles.buttonLogin, {
+        backgroundColor: nome.length <= 0 ? 'rgba(249, 46, 106, 0.5)' : '#F92E6A'
+      }]}
+      disabled={nome.length <= 0}
+      onPress={() => navigation.navigate("Escolher atividade", { data, nome })}>
+        <Text style={styles.textButton}>Próximo</Text>
+      </TouchableOpacity>
+      
       <View style={{height: 100}}/>
     </KeyboardAvoidingView>
   );
@@ -115,5 +103,10 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     color: '#F92E6A',
     fontWeight: 'bold'
+  },
+  textError:{
+    color: 'red',
+    fontSize: 15,
+    marginTop: 5
   }
 })

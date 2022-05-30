@@ -1,65 +1,59 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
-import firebase from '../../connection/firebaseConnection';
+import firestore from '@react-native-firebase/firestore';
 
 import { useNavigation } from '@react-navigation/native';
 
 import TarefasAluno from '../../components/TarefasAluno';
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Feather from 'react-native-vector-icons/Feather';
+import { useAuth } from '../../context/auth';
 
-export default function HomeAluno({route}){
+export default function HomeAluno({ route }){
 
   const navigation = useNavigation();
 
-  const [tarefas, setTarefas] = useState([
-    {
-      id: 1,
-      nome: 'Tarefa 01',
-      data: '21/03/2022',
-    },{
-      id: 2,
-      nome: 'Tarefa 02',
-      data: '21/03/2022',
-    },{
-      id: 3,
-      nome: 'Tarefa 03',
-      data: '21/03/2022',
-    },{
-      id: 4,
-      nome: 'Tarefa 04',
-      data: '21/03/2022',
-    },{
-      id: 5,
-      nome: 'Tarefa 05',
-      data: '21/03/2022',
-    },{
-      id: 6,
-      nome: 'Tarefa 06',
-      data: '21/03/2022',
-    },{
-      id: 7,
-      nome: 'Tarefa 07',
-      data: '21/03/2022',
-    },
-  ]);
+  const user = useAuth();
+  const { data } = route.params;
 
+  const [tarefas, setTarefas] = useState([]);
+
+  useEffect(() => {
+    const subscriber = firestore().collection('tarefas')
+    .where('owner', '==', user?.uid)
+    .where('key', '==', data?.id)
+    .onSnapshot(q => {
+      const listTask = [];
+      q.forEach(r => {
+        listTask.push({
+          id: r.id,
+          ...r.data()
+        })
+      })
+      setTarefas(listTask);
+    })
+
+    return () => subscriber();
+  }, [])
 
   return(
     <View style={styles.container}>
-      <Text style={styles.alunoTitulo}>Perfil: Amanda</Text>
-      <View>
+      <Text style={styles.alunoTitulo}>Perfil: {data?.name}</Text>
+
+      <View style={styles.titleView}>
         <Text style={styles.tarefasTitulo}>Lista de tarefas</Text>
-        <TouchableOpacity style={styles.plusView} onPress={() => navigation.navigate("Criar atividade")}>
-          <FontAwesome style={styles.svg} name='plus' size={40} color="#FFFFFF"/>
+        <TouchableOpacity style={styles.plusButton} onPress={() => navigation.navigate("Criar atividade", { data })}>
+          <Feather name='plus' size={25} color="#FFFFFF"/>
         </TouchableOpacity>
       </View>
+
       <FlatList
         data={tarefas}
-        renderItem={ ({item}) => (<TarefasAluno tarefa={item.nome} dataTarefa={item.data}/>) }
+        renderItem={ ({item}) => <TarefasAluno data={item}/> }
         keyExtractor={item => item.id}
       />
-      <TouchableOpacity style={styles.relatorioGeral} onPress={() => navigation.navigate('Relatório Geral')}>
+      <TouchableOpacity style={styles.relatorioGeral} 
+      onPress={() => navigation.navigate('Relatório Geral', { data: tarefas })}>
         <Text style={styles.textGerarRelatorio}>Gerar Relatório Geral</Text>
       </TouchableOpacity>
     </View>
@@ -73,26 +67,24 @@ const styles = StyleSheet.create({
   },
   tarefasTitulo:{
     fontSize: 30,
-    paddingLeft: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
     fontWeight: 'bold',
     color: '#F92E6A',
   },
-  plusView:{
-    position: 'absolute',
-    marginRight: 20,
-    bottom: 0,
-    right: 0,
-    marginBottom: 20,
-    width: 40,
-
+  titleView:{
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
   },
-  svg:{
+  plusButton:{
+    height: 50,
+    width: 50,
     backgroundColor: '#F92E6A',
-    textAlign: 'center',
-    borderRadius: 100
+    borderRadius: 35,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   relatorioGeral:{
     borderWidth: 2,

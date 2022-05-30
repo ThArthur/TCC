@@ -1,40 +1,52 @@
-import React, { useState, useEffect,  } from 'react';
+import React, { useState, useContext  } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import firebase from '../../connection/firebaseConnection';
+import { AuthContext } from '../../context/auth';
 
 export default function CadastroOrientador(){
+
+  const { handleRegisterAccounts } = useContext(AuthContext);
 
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
 
-  const loginFirebase = () => {
-    firebase.auth().createUserWithEmailAndPassword(email, password).then((userCredential) => {
-      
-      let user = userCredential.user;
-      navigation.navigate("Lista de alunos", { idUser: user.uid })
-      
-    }).catch((error) => {
-      let errorCode = error.code;
-      let errorMessage = error.message;
-    });
+  async function handleCreateAccount() {
+    try {
+      handleRegisterAccounts(email, password, name);
+    } catch (error) {
+      console.log(error)
+    }
   }
-
-  useEffect( () => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        navigation.navigate("Lista de alunos", { idUser: user.uid });
-      }
-    });
-  }, []);
 
   return(
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <Text style={styles.tittle}>Cadastrar conta</Text>
-      <TextInput style={styles.input} placeholder="Digite seu email" type="text" onChangeText={(text) => setEmail(text)} value={email}></TextInput>
-      <TextInput secureTextEntry={true} style={styles.input} placeholder="Digite sua senha" type="password" onChangeText={(text) => setPassword(text)} value={password}></TextInput>
+      
+      <TextInput 
+      style={styles.input} 
+      placeholder="Digite seu nome" 
+      type="text" 
+      onChangeText={setName} 
+      value={name}/>
+      
+      <TextInput 
+      style={styles.input} 
+      placeholder="Digite seu email" 
+      type="text" 
+      onChangeText={(text) => setEmail(text)} 
+      value={email}/>
+      
+      <TextInput 
+      secureTextEntry={true} 
+      style={styles.input} 
+      placeholder="Digite sua senha" 
+      type="password" 
+      onChangeText={(text) => setPassword(text)} 
+      value={password}
+      />
   
       {
         email === "" || password === "" 
@@ -43,7 +55,7 @@ export default function CadastroOrientador(){
           <Text style={styles.textButton}>Entrar</Text>
         </TouchableOpacity>
         :
-        <TouchableOpacity onPress={ loginFirebase } style={styles.buttonLogin}>
+        <TouchableOpacity onPress={handleCreateAccount} style={styles.buttonLogin}>
           <Text style={styles.textButton}>Entrar</Text>
         </TouchableOpacity>
       }

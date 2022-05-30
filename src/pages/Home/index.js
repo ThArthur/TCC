@@ -1,70 +1,66 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
+
+import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import Aluno from '../../components/Aluno';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import firebase from '../../connection/firebaseConnection';
+import FontAwesome from 'react-native-vector-icons/FontAwesome5';
+import { AuthContext, useAuth } from '../../context/auth';
 
-export default function Home({route}){
+export default function Home(){
 
   const navigation = useNavigation();
 
+  const {handleLogoutAccount} = useContext(AuthContext)
+  const user  = useAuth();
+
   const [isEmpty, setIsEmpty] = useState(false);
-
-  const {idUser} = route.params;
-
   const [alunos, setAlunos] = useState([])
 
-  async function loadAlunos(){
-    await firebase.firestore().collection('alunos').orderBy('nome').get().then((snapshot) => {
-      updateState(snapshot);
-    }).catch((error) => {
-      console.log(error);
-    })
-  }
-
-  function logout(){
-    firebase.auth().signOut().then(() => {
-      navigation.navigate("Login");
-    }).catch((error) => {
-      console.log(error);
-    });
-  }
-
-  async function updateState(snapshot){
-
-    let lista = [];
-    snapshot.forEach((doc) => {
-      lista.push({
-        id: doc.id,
-        nome: doc.data().nome,
-        idade: doc.data().idade,
-      })
-    });
-
-    setAlunos(alunos => [...alunos, ...lista]);
+  async function handleLogoutAccounts() {
+    try {
+      await handleLogoutAccount()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
-    loadAlunos();
-  }, []);
+    const subscriber = firestore()
+    .collection('user')
+    .doc(user.uid).collection('alunos')
+    .orderBy('created_at', 'asc')
+    .onSnapshot(query => {
+      const listStudents = []
+      query.forEach(response => {
+        listStudents.push({
+          id: response.id,
+          ...response.data()
+        })
+      })
+      setAlunos(listStudents);
+    })
 
+    return () => subscriber();
+  }, [])
+  
   return(
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTittle}>Lista de alunos</Text>
-        <TouchableOpacity style={styles.logoutButton} onPress={() => logout()}>
-          <Text style={styles.logoutText}>Logout</Text>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogoutAccounts}>
+          <Text style={styles.logoutText}>Sair</Text>
         </TouchableOpacity>
       </View>
       <FlatList
         data={alunos}
-        renderItem={ ({item}) => (<Aluno nome={item.nome} idAluno={item.id} />) }
-        keyExtractor={item => item.id}
+        renderItem={ ({item}) => <Aluno data={item}/> }
       />
-      <TouchableOpacity style={styles.plusView} onPress={() => navigation.navigate('Criar aluno', idUser)}>
-        <FontAwesome style={styles.svg} name='plus' size={50} color="#FFFFFF"/>
-      </TouchableOpacity>
+      <View style={styles.button}>
+        <TouchableOpacity style={styles.svg} onPress={() => navigation.navigate('Criar aluno')}>
+          <FontAwesome name='plus' size={25} color="#FFFFFF"/>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -73,8 +69,9 @@ const styles = StyleSheet.create({
   container:{
     display: 'flex',
     flex: 1,
+    backgroundColor: '#faf9f9'
   },
-  plusView:{
+  button:{
     position: 'absolute',
     display: 'flex',
     justifyContent: 'center',
@@ -82,34 +79,34 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     marginBottom: 20,
-    width: 50,
-
   },
   svg:{
     backgroundColor: '#F92E6A',
-    textAlign: 'center',
-    borderRadius: 100
+    height: 65,
+    width: 65,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 35
   },
   header:{
-    display: 'flex',
     flexDirection: 'row',
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingHorizontal: 25,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 5,
-    paddingBottom: 5,
-    backgroundColor: "#DCDCDC"
+    paddingVertical: 10,
+    backgroundColor: "#F92E6A"
   },
   headerTittle:{
-    color: '#F92E6A',
-    fontSize: 25,
+    color: '#FFF',
+    fontSize: 20,
+    fontWeight: 'bold'
   },
   logoutButton:{
     borderWidth: 1,
     padding: 10,
+    borderRadius: 5,
   },
   logoutText:{
-    color: '#F92E6A',
+    color: '#FFF',
   }
 })

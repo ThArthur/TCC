@@ -5,7 +5,9 @@ import TarefasAluno from '../../components/TarefasAluno';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-export default function DadosTarefas(){
+export default function DadosTarefas({ route }){
+
+  const { data } = route.params;
 
   const tarefas = 
     {
@@ -18,22 +20,22 @@ export default function DadosTarefas(){
 
   return(
     <View style={styles.container}>
-        <Text style={styles.titulo}>Tarefa 01</Text>
+        <Text style={styles.titulo}>{data?.task?.nome}</Text>
         <View style={styles.linhaDado}>
             <Text style={styles.opcao}>Tentativas: </Text>
-            <Text style={styles.opcao}>{tarefas.tentativas}</Text>
+            <Text style={styles.opcao}>{data?.task?.tentativas}</Text>
         </View>
         <View style={styles.linhaDado}>
             <Text style={styles.opcao}>Acertos: </Text>
-            <Text style={styles.opcao}>{tarefas.acertos}</Text>
+            <Text style={styles.opcao}>{data?.task?.acertos}</Text>
         </View>
         <View style={styles.linhaDado}>
             <Text style={styles.opcao}>Erros: </Text>
-            <Text style={styles.opcao}>{tarefas.erros}</Text>
+            <Text style={styles.opcao}>{data?.task?.erros}</Text>
         </View>
         <View style={styles.linhaDado}>
             <Text style={styles.opcao}>Acertos(%): </Text>
-            <Text style={styles.opcao}>{tarefas.acertoPorc}</Text>
+            <Text style={styles.opcao}>{data?.task?.acertoPorc}</Text>
         </View>
         <View style={styles.linhaDado}>
             <Text style={styles.opcao}>Erros(%): </Text>

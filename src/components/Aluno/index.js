@@ -7,13 +7,15 @@ import { useNavigation } from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
-export default function Aluno(props){
+export default function Aluno({ data }){
     
   const navigation = useNavigation();
   return(
-    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Dados Aluno', props.idAluno)} >
-        <Text style={styles.textAluno}>{props.nome}</Text>
-        <FontAwesome style={styles.svg} name='caret-right' size={35} color="#F92E6A"/>
+    <TouchableOpacity 
+    style={styles.container} 
+    onPress={() => navigation.navigate('Dados Aluno', { data: data })} >
+        <Text style={styles.textAluno}>{data.name}</Text>
+        <FontAwesome style={styles.svg} name='arrow-right' size={15} color="#F92E6A"/>
     </TouchableOpacity>
   );
 }

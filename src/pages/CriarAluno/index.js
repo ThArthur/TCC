@@ -1,68 +1,158 @@
 import React, { useState, useEffect,  } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import firebase from '../../connection/firebaseConnection';
 
-export default function CriarAluno({route}){
+import { 
+  StyleSheet, 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  KeyboardAvoidingView, 
+  TextInput,
+  ActivityIndicator,
+  Keyboard,
+  Alert
+} from 'react-native';
+
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigation } from '@react-navigation/native';
+import { Controller, useForm } from 'react-hook-form';
+import firestore from '@react-native-firebase/firestore';
+
+import { useAuth } from '../../context/auth';
+
+const scheme = Yup.object().shape({
+  nome: Yup.string().required('Este campo deve ser obrigatório!'),
+  idade: Yup.number().required('Este campo deve ser obrigatório!'),
+})
+
+export default function CriarAluno(){
 
   const navigation = useNavigation();
+  const user = useAuth();
+  
+  const [loading, setLoading] = useState(false);
 
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm({
+    resolver: yupResolver(scheme)
+  });
 
-  const [nome, setNome] = useState("");
-  const [idade, setIdade] = useState("");
-
-  async function criarAluno() {
-    console.log('1')
-    await firebase.firestore().collection('alunos').add({
-      nome: nome,
-      idade: idade,
-    }).then(() => {
-      setNome('');
-      setIdade('');
-      console.log('Entrou no Then')
-      navigation.goBack();
-    }).catch((error) => {
-      console.log(error);
+  async function handleCreateStudents(form) {
+    setLoading(true)
+    Keyboard.dismiss();
+    try {
+      await firestore().collection('user').doc(user.uid)
+      .collection('alunos').add({
+        name: form.nome,
+        idade: form.idade,
+        created_at: firestore.FieldValue.serverTimestamp()
+      })
       
-      console.log('Entrou no Error')
-    })
+      Alert.alert(
+        form.nome,
+        `Aluno ${form.nome} criado com sucesso!`
+      )
 
-    console.log('2')
+      navigation.goBack();
+
+    } catch (error) {
+      console.log(error)
+    }
+    reset();
+    setLoading(false);
   }
 
-  useEffect( () => {
-
-  }, []);
-
   return(
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-      <Text style={styles.textTittle}>Cadastre o aluno:</Text>
-      <TextInput style={styles.input} placeholder="Digite nome do aluno" type="text" onChangeText={(text) => setNome(text)} value={nome}></TextInput>
-      <TextInput style={styles.inputNumeric} placeholder="idade" keyboardType='numeric' onChangeText={(text) => setIdade(text)} value={idade}></TextInput>
-  
-      {
-        nome === "" || idade === "" 
-        ?
-        <TouchableOpacity disabled={true} style={styles.buttonLogin}>
-          <Text style={styles.textButton}>Criar aluno</Text>
+    <KeyboardAvoidingView 
+    behavior={Platform.OS === "ios" ? "padding" : "height"} 
+    style={styles.container}
+    >
+      <View style={styles.contentItens}>
+        <Text style={styles.textTittle}>Cadastre o aluno:</Text>
+
+        <View style={styles.inputContent}>
+
+          <Text style={[styles.tittle, {
+            fontSize: 15,
+            marginBottom: 0,
+            fontWeight: '500'
+          }]}>Nome do aluno:</Text>
+
+          <Controller
+          name="nome"
+          control={control}
+          render={({ field : { onChange, value } }) => 
+            <TextInput 
+            style={styles.input} 
+            placeholder="Ex: Vinicius, Matheus, João" 
+            type="text" 
+            onChangeText={onChange} 
+            value={value}/>
+          }
+          />
+
+          {errors.nome && 
+          <Text style={styles.textError}>{errors?.nome?.message}</Text>
+          }
+        </View>
+
+        <View style={[styles.inputContent, { marginTop: 10 }]}>
+          
+          <Text style={[styles.tittle, {
+            fontSize: 15,
+            marginBottom: 0,
+            fontWeight: '500'
+          }]}>Idade do aluno:</Text>
+
+          <Controller
+          name="idade"
+          control={control}
+          render={({ field : { onChange, value } }) => 
+            <TextInput 
+            style={styles.input} 
+            placeholder="Ex: 12, 15, 17" 
+            keyboardType='numeric'
+            onChangeText={onChange} 
+            value={value}/>
+          }
+          />
+
+          {errors.idade && 
+          <Text style={styles.textError}>{errors?.idade?.message}</Text>
+          }
+
+        </View>
+
+        <TouchableOpacity 
+        onPress={handleSubmit(handleCreateStudents)} 
+        style={styles.buttonLogin}
+        >
+          {loading ?
+          <ActivityIndicator size={25} color="#FFF" />
+          : <Text style={styles.textButton}>Criar aluno</Text>}
         </TouchableOpacity>
-        :
-        <TouchableOpacity onPress={ criarAluno } style={styles.buttonLogin}>
-          <Text style={styles.textButton}>Criar aluno</Text>
-        </TouchableOpacity>
-      }
-      <View style={{height: 100}}/>
+      </View>
+
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container:{
-    display: 'flex',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#FFFFFF'
+  },
+  contentItens: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  inputContent:{
+    width: '80%',
   },
   tittle:{
       fontSize: 38,
@@ -71,24 +161,21 @@ const styles = StyleSheet.create({
       color: '#F92E6A',
   },
   input:{
-      width: 300,
-      marginTop: 10,
       padding: 10,
       height: 50,
-      borderBottomWidth: 1,
-      borderBottomColor: '#F92E6A',
-      marginLeft: 'auto',
-      marginRight: 'auto',
+      borderWidth: 1,
+      borderColor: '#F92E6A',
+      borderRadius: 5,
       color: '#4D5156'
   },
   buttonLogin:{
     backgroundColor: '#F92E6A',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 200,
+    width: '80%',
     height: 50,
     marginTop: 30,
-    borderRadius: 50
+    borderRadius: 5
 },
   buttonCriarConta:{
 
@@ -103,21 +190,22 @@ const styles = StyleSheet.create({
     color: '#000000'
   },
   inputNumeric:{
-    width: 100,
     marginTop: 10,
     padding: 10,
     height: 50,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F92E6A',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    borderWidth: 1,
+    borderColor: '#F92E6A',
+    borderRadius: 5,
     color: '#4D5156',
-    textAlign: 'center',
   },
   textTittle:{
     fontSize: 25,
     paddingBottom: 10,
     color: '#F92E6A',
     fontWeight: 'bold'
+  },
+  textError:{
+    fontSize: 15,
+    color: 'red'
   }
 })
