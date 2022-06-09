@@ -8,6 +8,7 @@ import RelatorioGeral from '../pages/RelatorioGeral';
 import CriarAluno from '../pages/CriarAluno';
 import CriarAtividade from '../pages/CriarAtividade';
 import EscolherAtividade from '../pages/EscolherAtividade';
+import { GameSequence } from '../pages/GameSequence';
 
 const AppStack = createNativeStackNavigator();
 
@@ -54,6 +55,13 @@ export default function AppRoute() {
         name="Escolher atividade" 
         component={EscolherAtividade} 
         />
+
+        <AppStack.Screen 
+        options={{headerShown: false, headerTintColor: '#F92E64',}} 
+        name="Jogo Bau" 
+        component={GameSequence} 
+        />
+
       </AppStack.Navigator>
   );
 }

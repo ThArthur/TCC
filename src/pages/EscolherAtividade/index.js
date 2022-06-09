@@ -92,7 +92,7 @@ export default function EscolherAtividade({route}){
             </TouchableOpacity>
 
             <TouchableOpacity 
-            onPress={() => setGameSelected('bau')}
+            onPress={() => navigation.navigate('Jogo Bau')}
             style={[styles.gameContent, {
               borderWidth: gameSelected === 'bau' ? 2 : 0,
               borderColor: '#F92E6A'

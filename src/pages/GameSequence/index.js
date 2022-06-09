@@ -1,55 +1,95 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity, Modal } from 'react-native';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { Figuras } from '../../components/Figuras';
 
 export function GameSequence(){
 
-    let figurer = [
+    figurer = [
         {
             key: '1',
-            type: 'Bicicleta'
+            type: 'Bicicleta',
+            inBau: 0
         },
         {
             key: '2',
-            type: 'Cavalo'
+            type: 'Cavalo',
+            inBau: 0
         },
         {
             key: '3',
-            type: 'Moto'
+            type: 'Moto',
+            inBau: 0
         },
         {
             key: '4',
-            type: 'Pinguin'
+            type: 'Pinguin',
+            inBau: 0
         },
         {
             key: '5',
-            type: 'Ursinho'
+            type: 'Ursinho',
+            inBau: 0
         },
         {
             key: '6',
-            type: 'Ovni'
+            type: 'Ovni',
+            inBau: 0
         },
-    ]
+    ]    
+
+    const [quantItem, setQuantItem] = useState(Math.floor(Math.random() * (7 - 3)) + 3);
+    const [contador, setContador] = useState(0);
+    const [objetivoJogo, setObjetivoJogo] = useState(0);
+    const [modalVisible, setModalVisible] = useState(false);
     
     const [ bauX, setBauX ] = useState({
         x: 0,
         y: 0
     });
 
-    const [ bauItens, setBauItens ] = useState([]);
-    var contador = 0;
+    function enviarAtividade(){
+        if(quantItem === contador){
+            setObjetivoJogo(1);
+            setModalVisible(true);
+        }if(quantItem < contador){
+            setObjetivoJogo(2);
+        }if(quantItem > contador){
+            setObjetivoJogo(3);
+        }
+    }
+
 
   return (
     <View style={styles.container}>
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        >
+            <View style={styles.modalStyle}>
+                <View style={{
+                width: 300,
+                height: 300,
+                backgroundColor: '#FFFFFF',
+                borderRadius: 30,
+                shadowColor: 'black',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'}}>
+                    <Text style={styles.textModal}>Parabéns</Text>
+                    <TouchableOpacity style={styles.buttonModal}>
+                        <Text>Próximo</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
         
         <View style={styles.header}>
             <Text style={styles.title}>
-                Escolha seu brinquedo preferido e coloque no baú,
-                contando-os Clique na quantidade escolhida {' '}
-                {contador}
+                Escolha {quantItem} brinquedos e arraste até a caixa:
             </Text>
         </View>
 
@@ -62,17 +102,21 @@ export function GameSequence(){
                 width: '25%'
             }}>
                 {figurer.map(fig => (
-                    <Figuras 
+                    <Figuras
                     key={fig.key} 
                     bauX={bauX}
-                    contador={contador}
+                    setContador={setContador}
                     data={fig}
                     />
                 ))}
             </View>
 
-
             <View 
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
             onLayout={event => {
                 if(!event) return;
                 const layout = event.nativeEvent.layout;
@@ -85,16 +129,23 @@ export function GameSequence(){
                 style={styles.box}
                 source={require('../../assets/jogoBau.png')}
                 />
+                <View style={{maxWidth: 200, marginTop: 20,}}>
+                    <Text style={styles.styleTextQuant}>Quantidade de itens no baú: <Text style={{fontWeight: 'bold', fontSize: 30}}>{contador}</Text></Text>
+                </View>
             </View>
         </View>
-
+        <View style={styles.viewButton}>
+            <TouchableOpacity style={styles.buttonConfirmar} onPress={() => enviarAtividade()}>
+                <Text>Enviar</Text>
+            </TouchableOpacity>
+        </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: '#FFF'
+        backgroundColor: '#FFF',
     },
     header:{
         paddingVertical: 25,
@@ -114,6 +165,42 @@ const styles = StyleSheet.create({
     box:{ 
         height: 150,
         width: 150,
+        
+    },
+    styleTextQuant:{
+        textAlign: 'center',
+        fontSize: 15
+    },
+    viewButton:{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    buttonConfirmar:{
+        backgroundColor: '#98FB98',
+        marginTop: 20,
+        width: 200,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20
+    },
+    modalStyle:{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)'
+        
+    },
+    buttonModal:{
+        width: 200,
+        height: 30,
+        backgroundColor: '#98FB98',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        marginTop: 30
     }
     
 })
