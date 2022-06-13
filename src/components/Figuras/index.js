@@ -66,7 +66,7 @@ export function Figuras({ bauX, setContador, data }){
                         data?.type === 'Cavalo' ? require('../../assets/Hallowen.png') :
                         data?.type === 'Bicicleta' ? require('../../assets/joyStick.png') :
                         data?.type === 'Pinguin' ? require('../../assets/star.png') :
-                        data?.type === 'Moto' ? require('../../assets/Bola_de_Futebol.png') :
+                        data?.type === 'Moto' ? require('../../assets/bola.png') :
                         data?.type === 'Ursinho' ? require('../../assets/jogoBau.png') :
                         data?.type === 'Ovni' && require('../../assets/jogoMao.png')
                     } />
@@ -81,7 +81,7 @@ export function Figuras({ bauX, setContador, data }){
                     data?.type === 'Cavalo' ? require('../../assets/Hallowen.png') :
                     data?.type === 'Bicicleta' ? require('../../assets/joyStick.png') :
                     data?.type === 'Pinguin' ? require('../../assets/star.png') :
-                    data?.type === 'Moto' ? require('../../assets/Bola_de_Futebol.png') :
+                    data?.type === 'Moto' ? require('../../assets/bola.png') :
                     data?.type === 'Ursinho' ? require('../../assets/jogoBau.png') :
                     data?.type === 'Ovni' && require('../../assets/jogoMao.png')
                 } />

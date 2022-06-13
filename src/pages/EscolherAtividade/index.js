@@ -25,6 +25,16 @@ export default function EscolherAtividade({route}){
   
   const [gameSelected, setGameSelected] = useState('mao');
 
+  function irParaJogo(){
+    if(gameSelected === 'mao'){
+
+    }if(gameSelected === 'bau'){
+      navigation.navigate('Jogo Bau');
+    }if(gameSelected === 'sequencia'){
+      
+    }
+  }
+
   async function handleCreateTask() {
     try {
       await firestore().collection('tarefas')
@@ -42,16 +52,12 @@ export default function EscolherAtividade({route}){
         created_at: firestore.FieldValue.serverTimestamp()
       })
 
-      Alert.alert(
-        "Tarefa "+ nome,
-        "Sua tarefa foi criada com sucesso!"
-      )
-
       navigation.goBack();
 
     } catch (error) {
       console.log(error)
     }
+    irParaJogo();
   }
 
   return(
@@ -92,7 +98,7 @@ export default function EscolherAtividade({route}){
             </TouchableOpacity>
 
             <TouchableOpacity 
-            onPress={() => navigation.navigate('Jogo Bau')}
+            onPress={() => setGameSelected('bau')}
             style={[styles.gameContent, {
               borderWidth: gameSelected === 'bau' ? 2 : 0,
               borderColor: '#F92E6A'

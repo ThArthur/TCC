@@ -2,10 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import { View, StyleSheet, Text, Image, TouchableOpacity, Modal } from 'react-native';
 import { PanGestureHandler } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { Figuras } from '../../components/Figuras';
 
 export function GameSequence(){
+
+    const navigation = useNavigation();
 
     figurer = [
         {
@@ -70,17 +73,9 @@ export function GameSequence(){
         visible={modalVisible}
         >
             <View style={styles.modalStyle}>
-                <View style={{
-                width: 300,
-                height: 300,
-                backgroundColor: '#FFFFFF',
-                borderRadius: 30,
-                shadowColor: 'black',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'}}>
-                    <Text style={styles.textModal}>Parabéns</Text>
-                    <TouchableOpacity style={styles.buttonModal}>
+                <View style={styles.modalDentro}>
+                    <Text style={styles.textModal}>Parabéns{"\n"}Tarefa concluida</Text>
+                    <TouchableOpacity style={styles.buttonModal} onPress={() => {}}>
                         <Text>Próximo</Text>
                     </TouchableOpacity>
                 </View>
@@ -193,6 +188,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.4)'
         
     },
+    textModal:{
+        marginTop: 30,
+        fontSize: 30
+    },
     buttonModal:{
         width: 200,
         height: 30,
@@ -200,7 +199,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 20,
-        marginTop: 30
+        marginTop: 30,
+        marginBottom: 30
+    },
+    subTextModal:{
+        fontSize: 20
+    },
+    modalDentro:{
+        width: 300,
+        height: 300,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 30,
+        shadowColor: 'black',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
     }
     
 })
