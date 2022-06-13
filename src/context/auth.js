@@ -4,32 +4,6 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-community/async-storage';
 
-/**
- * [x] - Consultar alunos,
- * [x] - Consultar tarefas
- * [x] - Criar coleção do usuario,
- * [x] - Criar os alunos de um determinado usuários,
- * [x] - De cada aluno, criar uma coleção de tarefas,
- */
-
-/**
- * Usuario: {
- *  name: 'Teste'
- * }
- * Aluno: {
- *  name: 'Teste',
- *  idade: 16,
- *  data_nascimento: 0/0/000
- *  created_at: timestamp
- * }
- * Tarefas: {
- *  tentativas: 5,
- *  acertos: 0,
- *  erros: 0,
- *  created_at: timestamp
- * }
- */
-
 export const AuthContext = createContext({});
 
 export function AuthProvider({ children }){ 

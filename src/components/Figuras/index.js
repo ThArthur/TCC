@@ -1,13 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { StyleSheet, Image } from 'react-native';
 import { PanGestureHandler } from 'react-native-gesture-handler';
-import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { runOnJS, set, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 
-export function Figuras({ bauX, contador, data }){
+export function Figuras({ bauX, setContador, data }){
 
-    const translateX = useSharedValue(0)
-    const translateY = useSharedValue(0)
+    const translateX = useSharedValue(0);
+    const translateY = useSharedValue(0);
+
+    async function incrementCount() {
+        setContador((currentCount) => currentCount + 1);
+        data.inBau = 1;
+    }
 
     const panGestureHandler = useAnimatedGestureHandler({
         onStart: (event, context) => {
@@ -19,16 +24,14 @@ export function Figuras({ bauX, contador, data }){
             translateY.value = event.translationY + context.translateY;
         },
         onEnd: (event) => {
-            const distance = Math.sqrt(translateX.value ** 2 + translateY.value ** 2)
-            if(distance >= ( bauX.x / 1.5 )) {
-                translateX.value = withTiming(bauX.x);
-                translateY.value = withTiming(bauX.y);
+            if(translateX.value >= ( bauX.x / 1.5 ) && translateX.value <= bauX.x * 1.5 ) {
+                translateX.value = withTiming(100000000);
+                translateY.value = withTiming(100000000);          
+                runOnJS(incrementCount)();
             } else {
                 translateX.value = withTiming(0);
                 translateY.value = withTiming(0);
             }
-            
-            
         },
     })
 
@@ -45,26 +48,47 @@ export function Figuras({ bauX, contador, data }){
         }
     })
 
+    useEffect(() => {
 
-  return (
-    <PanGestureHandler onGestureEvent={panGestureHandler}>
-        <Animated.View style={[styles.object, rStyle]}>
-            <Animated.Image 
-            style={{
-                height: 50,
-                width: 50
-            }}
-            source={
-                data?.type === 'Cavalo' ? require('../../assets/Hallowen.png') :
-                data?.type === 'Bicicleta' ? require('../../assets/joyStick.png') :
-                data?.type === 'Pinguin' ? require('../../assets/star.png') :
-                data?.type === 'Moto' ? require('../../assets/Bola_de_Futebol.png') :
-                data?.type === 'Ursinho' ? require('../../assets/jogoBau.png') :
-                data?.type === 'Ovni' && require('../../assets/jogoMao.png')
-            } />
-        </Animated.View>
-    </PanGestureHandler>
-  );
+    }, [incrementCount]);
+
+    return (
+        <PanGestureHandler onGestureEvent={panGestureHandler}>
+            {
+                data?.inBau === 0 ? 
+                <Animated.View style={[styles.object, rStyle]}>
+                    <Animated.Image 
+                    style={{
+                        height: 50,
+                        width: 50
+                    }}
+                    source={
+                        data?.type === 'Cavalo' ? require('../../assets/Hallowen.png') :
+                        data?.type === 'Bicicleta' ? require('../../assets/joyStick.png') :
+                        data?.type === 'Pinguin' ? require('../../assets/star.png') :
+                        data?.type === 'Moto' ? require('../../assets/bola.png') :
+                        data?.type === 'Ursinho' ? require('../../assets/jogoBau.png') :
+                        data?.type === 'Ovni' && require('../../assets/jogoMao.png')
+                    } />
+                </Animated.View> : 
+                <Animated.View style={{display: 'none'}}>
+                <Animated.Image 
+                style={{
+                    height: 50,
+                    width: 50
+                }}
+                source={
+                    data?.type === 'Cavalo' ? require('../../assets/Hallowen.png') :
+                    data?.type === 'Bicicleta' ? require('../../assets/joyStick.png') :
+                    data?.type === 'Pinguin' ? require('../../assets/star.png') :
+                    data?.type === 'Moto' ? require('../../assets/bola.png') :
+                    data?.type === 'Ursinho' ? require('../../assets/jogoBau.png') :
+                    data?.type === 'Ovni' && require('../../assets/jogoMao.png')
+                } />
+            </Animated.View>
+            }
+        </PanGestureHandler>
+    );
 }
 const styles = StyleSheet.create({
     object: {
