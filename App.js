@@ -4,16 +4,21 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AuthProvider } from './src/context/auth';
 import { Route } from './src/route';
 import { GameArrastarQuant } from './src/pages/GameArrastarQuant';
-import { GameSequence } from './src/pages/GameSequence';
+import { Provider } from 'react-redux';
+import store from './src/store/index';
+import { Quest } from './src/components/Quest';
 
 export default function App(){
   return(
-    <NavigationContainer>
-      <AuthProvider>
-        <GestureHandlerRootView style={{flex: 1,}}>
-          <GameArrastarQuant/>
-        </GestureHandlerRootView>
-      </AuthProvider>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{flex: 1,}}>
+      <NavigationContainer>
+        <AuthProvider>
+            <Provider store={store}>
+              <Quest/>
+              <GameArrastarQuant/>
+            </Provider>
+        </AuthProvider>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
