@@ -46,7 +46,7 @@ export function Quest(){
 
     timer = setTimeout(() => {
       hide()
-    }, 2000)
+    }, 4000)
   }
 
   function hide() {
@@ -71,7 +71,7 @@ export function Quest(){
           <Icon name={type[quest.type].icon} size={100} color={type[quest.type].color} />
           <Text style={[styles.title, {
              color: type[quest.type].color,
-          }]}>{quest.type === 'error' ? 'Ops ... Resposta incorreta!' : 'Boa!!! Resposta correta!'}{'\n'}
+          }]}>{quest.type === 'error' ? 'Vamos tentar novamente?' : 'Parabéns!!! Resposta correta!'}{'\n'}
           <Text style={[styles.title, { fontWeight: 'normal', fontSize: 20 }]}>{quest.message}</Text>
           </Text>
         </Animated.View>

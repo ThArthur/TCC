@@ -4,7 +4,6 @@ import { View, StyleSheet, Text, Image, TouchableOpacity, Modal } from 'react-na
 import { TextInput } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
 import { useDispatch } from 'react-redux';
-
 import { showQuest } from '../../store/modules/quest/actions';
 
 const array = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
@@ -20,7 +19,7 @@ const arrayObject = [
         id: 2, 
         pos: array[Math.floor(Math.random() * array.length)], 
         image: require('../../assets/bola.png'), 
-        nome: 'Bola de futebol' 
+        nome: 'Bolas' 
     },
     { 
         id: 3, 
@@ -46,6 +45,9 @@ const randomObject = arrayObject[Math.floor(Math.random() * arrayObject.length)]
 
 export function GameArrastarQuant(){
 
+    const [hudAleatoria, setHudAleatoria] = useState(Math.floor(Math.random() * 4));
+    console.log(hudAleatoria)
+
     const dispatch = useDispatch();
 
     function shuffle(arrayObject) {
@@ -55,19 +57,24 @@ export function GameArrastarQuant(){
         while (i--) {
             return array.splice(Math.floor(Math.random() * (i+1)), 1)[0];
         }
+
+        console.log(i)
     
     }
 
     function handleSubmit(suffle) {
         if(suffle !== randomObject.pos) {
-            dispatch(showQuest('Uma pena', 'error'))
+            dispatch(showQuest('Você errou, tente novamente!', 'error'))
             return;
-        } else if(suffle === randomObject.pos){
-            dispatch(showQuest('Uma pena', 'sucess'))
-
-        }
-
+        } 
     }
+
+    function respostaCerta(){
+        dispatch(showQuest('Parabéns!', 'sucess'))
+        return;
+    }
+    
+    console.log(randomObject)
 
     return (
     <View style={styles.container}>
@@ -77,8 +84,7 @@ export function GameArrastarQuant(){
        </View>
        
        <View style={styles.informations}>
-        <Text style={styles.textHeader}>Quanto(a)s figuras de {randomObject.nome.toLocaleUpperCase()} contém?</Text>
-        <Text style={styles.textHeader}>Você tem 5 chances</Text>
+        <Text style={styles.textHeader}>Quanto(a)s {randomObject.nome.toLocaleUpperCase()} contém?</Text>
        </View>
 
        <View style={styles.containerQuestion}>
@@ -86,25 +92,89 @@ export function GameArrastarQuant(){
                 <Image key={index} style={styles.imageQuestion} source={randomObject.image}/>
             ))}
        </View>
+        {
+            hudAleatoria === 0 ? 
+            <View style={styles.viewResposta}>
+                <View style={styles.viewRespostax}>
+                        <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 5}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 4}</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.viewRespostax}>
+                    <TouchableOpacity onPress={() => handleSubmit(shuffle())}style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 1}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => respostaCerta()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos}</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            : hudAleatoria === 1 ? 
+            <View style={styles.viewResposta}>
+                <View style={styles.viewRespostax}>
+                    <TouchableOpacity onPress={() => handleSubmit(shuffle())}style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 1}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => respostaCerta()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos}</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.viewRespostax}>
+                        <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 5}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 4}</Text>
+                    </TouchableOpacity>
+                </View>
+            </View> 
 
-       <View style={styles.viewResposta}>
-        <View style={styles.viewRespostax}>
-            <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
-                <Text style={styles.textResponse}>{shuffle()}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
-                <Text style={styles.textResponse}>{shuffle()}</Text>
-            </TouchableOpacity>
-        </View>
-        <View style={styles.viewRespostax}>
-            <TouchableOpacity onPress={() => handleSubmit(shuffle())}style={styles.buttonResposta}>
-                <Text style={styles.textResponse}>{shuffle()}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
-                <Text style={styles.textResponse}>{shuffle()}</Text>
-            </TouchableOpacity>
-        </View>
-       </View>
+            : hudAleatoria === 2 ?
+
+            <View style={styles.viewResposta}>
+                <View style={styles.viewRespostax}>
+                    <TouchableOpacity onPress={() => respostaCerta()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleSubmit(shuffle())}style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 1}</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.viewRespostax}>
+                        <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 5}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 4}</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            :
+
+            <View style={styles.viewResposta}>
+                <View style={styles.viewRespostax}>
+                    <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 5}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleSubmit(shuffle())}style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 1}</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.viewRespostax}>
+                    <TouchableOpacity onPress={() => respostaCerta()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject.pos + 4}</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        }
+       
     </View>
   );
 }
@@ -135,13 +205,15 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         marginLeft: 20,
         marginRight: 20,
-        paddingTop: 10,
-        paddingBottom: 10
+        paddingTop: 50,
+        paddingBottom: 10,
+
     },
     viewResposta:{
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginTop: 100
     },
     imageQuestion:{
         width: 70,
@@ -174,6 +246,7 @@ const styles = StyleSheet.create({
       },
       textHeader:{
         fontSize: 17,
-        color: '#333'
+        color: '#333',
+        marginTop: 20
       }
 })

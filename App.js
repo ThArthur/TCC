@@ -7,6 +7,8 @@ import { GameArrastarQuant } from './src/pages/GameArrastarQuant';
 import { Provider } from 'react-redux';
 import store from './src/store/index';
 import { Quest } from './src/components/Quest';
+import { GameSequence } from './src/pages/GameSequence';
+import { JogoMao } from './src/pages/JogoMao';
 
 export default function App(){
   return(
@@ -15,7 +17,7 @@ export default function App(){
         <AuthProvider>
             <Provider store={store}>
               <Quest/>
-              <GameArrastarQuant/>
+              <JogoMao/>
             </Provider>
         </AuthProvider>
       </NavigationContainer>

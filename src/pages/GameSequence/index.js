@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import { View, StyleSheet, Text, Image, TouchableOpacity, Modal } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { Figuras } from '../../components/Figuras';
+import { useDispatch } from 'react-redux';
+import { showQuest } from '../../store/modules/quest/actions';
+
 
 export function GameSequence(){
 
@@ -46,8 +49,8 @@ export function GameSequence(){
     const [quantItem, setQuantItem] = useState(Math.floor(Math.random() * (7 - 3)) + 3);
     const [contador, setContador] = useState(0);
     const [objetivoJogo, setObjetivoJogo] = useState(0);
-    const [modalVisible, setModalVisible] = useState(false);
-    
+    const dispatch = useDispatch();
+
     const [ bauX, setBauX ] = useState({
         x: 0,
         y: 0
@@ -56,32 +59,22 @@ export function GameSequence(){
     function enviarAtividade(){
         if(quantItem === contador){
             setObjetivoJogo(1);
-            setModalVisible(true);
+            dispatch(showQuest('Parabéns!', 'sucess'));
+
         }if(quantItem < contador){
             setObjetivoJogo(2);
+            dispatch(showQuest('Colocou muitos brinquedos!', 'error'));
+
         }if(quantItem > contador){
             setObjetivoJogo(3);
+            dispatch(showQuest('Colocou poucos brinquedos!', 'error'));
+
         }
     }
 
 
   return (
-    <View style={styles.container}>
-        <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        >
-            <View style={styles.modalStyle}>
-                <View style={styles.modalDentro}>
-                    <Text style={styles.textModal}>Parabéns{"\n"}Tarefa concluida</Text>
-                    <TouchableOpacity style={styles.buttonModal} onPress={() => {}}>
-                        <Text>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </Modal>
-        
+    <View style={styles.container}>        
         <View style={styles.header}>
             <Text style={styles.title}>
                 Escolha {quantItem} brinquedos e arraste até a caixa:
