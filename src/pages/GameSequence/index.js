@@ -7,11 +7,15 @@ import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, 
 import { Figuras } from '../../components/Figuras';
 import { useDispatch } from 'react-redux';
 import { showQuest } from '../../store/modules/quest/actions';
+import firestore from '@react-native-firebase/firestore';
+import { doc, setDoc } from "firebase/firestore";
+import { useAuth } from '../../context/auth';
 
-
-export function GameSequence(){
+export function GameSequence({route}){
 
     const navigation = useNavigation();
+    const { data, nome } = route.params;
+    const user = useAuth();
 
     figurer = [
         {
@@ -56,18 +60,93 @@ export function GameSequence(){
         y: 0
     });
 
-    function enviarAtividade(){
+    async function enviarAtividade(){
         if(quantItem === contador){
             setObjetivoJogo(1);
             dispatch(showQuest('Parabéns!', 'sucess'));
+
+            try {
+                await firestore().collection('tarefas')
+                .add({
+                  student: data?.name,
+                  owner: user?.uid,
+                  key: data?.id,
+                  task:{
+                    nome,
+                    activity_type: 'Colocar item no baú',
+                    quantidadePedida: quantItem,
+                    quantidadeColocada: contador,
+                    acertouQuestao: 'Certa'
+                  },
+                  created_at: firestore.FieldValue.serverTimestamp()
+                })
+          
+          
+              } catch (error) {
+                console.log(error)
+              }
+
+            timer = setTimeout(() => {
+                navigation.navigate('Dados Aluno', {data});
+            }, 3000)
 
         }if(quantItem < contador){
             setObjetivoJogo(2);
             dispatch(showQuest('Colocou muitos brinquedos!', 'error'));
 
+            try {
+                await firestore().collection('tarefas')
+                .add({
+                  student: data?.name,
+                  owner: user?.uid,
+                  key: data?.id,
+                  task:{
+                    nome,
+                    activity_type: 'Colocar item no baú',
+                    quantidadePedida: quantItem,
+                    quantidadeColocada: contador,
+                    acertouQuestao: 'Errada'
+                  },
+                  created_at: firestore.FieldValue.serverTimestamp()
+                })
+          
+          
+              } catch (error) {
+                console.log(error)
+              }
+
+            timer = setTimeout(() => {
+                navigation.navigate('Dados Aluno', {data});
+            }, 3000)
+
         }if(quantItem > contador){
             setObjetivoJogo(3);
             dispatch(showQuest('Colocou poucos brinquedos!', 'error'));
+
+            try {
+                await firestore().collection('tarefas')
+                .add({
+                  student: data?.name,
+                  owner: user?.uid,
+                  key: data?.id,
+                  task:{
+                    nome,
+                    activity_type: 'Colocar item no baú',
+                    quantidadePedida: quantItem,
+                    quantidadeColocada: contador,
+                    acertouQuestao: 'Errada'
+                  },
+                  created_at: firestore.FieldValue.serverTimestamp()
+                })
+          
+          
+              } catch (error) {
+                console.log(error)
+              }
+
+              timer = setTimeout(() => {
+                navigation.navigate('Dados Aluno', {data});
+            }, 3000)
 
         }
     }
@@ -162,7 +241,8 @@ const styles = StyleSheet.create({
     viewButton:{
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        zIndex: -1,
     },
     buttonConfirmar:{
         backgroundColor: '#98FB98',

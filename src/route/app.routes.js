@@ -9,6 +9,8 @@ import CriarAluno from '../pages/CriarAluno';
 import CriarAtividade from '../pages/CriarAtividade';
 import EscolherAtividade from '../pages/EscolherAtividade';
 import { GameSequence } from '../pages/GameSequence';
+import { GameArrastarQuant } from '../pages/GameArrastarQuant';
+import { JogoMao } from '../pages/JogoMao';
 
 const AppStack = createNativeStackNavigator();
 
@@ -60,6 +62,18 @@ export default function AppRoute() {
         options={{headerShown: false, headerTintColor: '#F92E64',}} 
         name="Jogo Bau" 
         component={GameSequence} 
+        />
+
+        <AppStack.Screen 
+        options={{headerShown: false, headerTintColor: '#F92E64',}} 
+        name="Game Arrastar" 
+        component={GameArrastarQuant} 
+        />
+
+        <AppStack.Screen 
+        options={{headerShown: false, headerTintColor: '#F92E64',}} 
+        name="Jogo Mao" 
+        component={JogoMao} 
         />
 
       </AppStack.Navigator>

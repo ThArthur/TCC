@@ -30,8 +30,6 @@ export function Quest(){
   const dispatch = useDispatch();
   const quest = useSelector((state) => state.quest);
 
-  console.log(type[quest.type])
-
   const [pos] = useState(new Animated.Value(-height));
 
   function show() {
@@ -46,7 +44,7 @@ export function Quest(){
 
     timer = setTimeout(() => {
       hide()
-    }, 4000)
+    }, 2000)
   }
 
   function hide() {

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 import { View, StyleSheet, Text, Image, TouchableOpacity, Modal } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
 import { useDispatch } from 'react-redux';
 import { showQuest } from '../../store/modules/quest/actions';
+import { useAuth } from '../../context/auth';
+import firestore from '@react-native-firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
 
 const array = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 
@@ -42,11 +44,17 @@ const arrayObject = [
 ]
 
 const randomObject = arrayObject[Math.floor(Math.random() * arrayObject.length)];
+const randomObject5 = randomObject.pos + 5;
+const randomObject4 = randomObject.pos + 4;
+const randomObject1 = randomObject.pos + 1;
 
-export function GameArrastarQuant(){
+export function GameArrastarQuant({route}){
+
+    const navigation = useNavigation();
 
     const [hudAleatoria, setHudAleatoria] = useState(Math.floor(Math.random() * 4));
-    console.log(hudAleatoria)
+    const { data, nome } = route.params;
+    const user = useAuth();
 
     const dispatch = useDispatch();
 
@@ -58,23 +66,122 @@ export function GameArrastarQuant(){
             return array.splice(Math.floor(Math.random() * (i+1)), 1)[0];
         }
 
-        console.log(i)
-    
     }
 
-    function handleSubmit(suffle) {
-        if(suffle !== randomObject.pos) {
-            dispatch(showQuest('Você errou, tente novamente!', 'error'))
-            return;
-        } 
-    }
+    async function respostaErrada1(){
+        dispatch(showQuest('Você errou, tente novamente!', 'error'));
+        try {
+            await firestore().collection('tarefas')
+            .add({
+              student: data?.name,
+              owner: user?.uid,
+              key: data?.id,
+              task:{
+                nome,
+                activity_type: 'Conte as figuras',
+                quantidadeCerta: randomObject.pos,
+                qunatidadeRespondida: randomObject1,
+                acertouQuestao: 'Errada'
+              },
+              created_at: firestore.FieldValue.serverTimestamp()
+            })
+      
+          } catch (error) {
+            console.log(error)
+          }
 
-    function respostaCerta(){
-        dispatch(showQuest('Parabéns!', 'sucess'))
+        timer = setTimeout(() => {
+            navigation.navigate('Dados Aluno', {data});
+        }, 3000)
         return;
     }
-    
-    console.log(randomObject)
+
+    async function respostaErrada4(){
+        dispatch(showQuest('Você errou, tente novamente!', 'error'));
+        try {
+            await firestore().collection('tarefas')
+            .add({
+              student: data?.name,
+              owner: user?.uid,
+              key: data?.id,
+              task:{
+                nome,
+                activity_type: 'Conte as figuras',
+                quantidadeCerta: randomObject.pos,
+                qunatidadeRespondida: randomObject4,
+                acertouQuestao: 'Errada'
+              },
+              created_at: firestore.FieldValue.serverTimestamp()
+            })
+      
+          } catch (error) {
+            console.log(error)
+          }
+
+        timer = setTimeout(() => {
+            navigation.navigate('Dados Aluno', {data});
+        }, 3000)
+
+        return;
+    }
+
+    async function respostaErrada5(){
+        dispatch(showQuest('Você errou, tente novamente!', 'error'));
+        try {
+            await firestore().collection('tarefas')
+            .add({
+              student: data?.name,
+              owner: user?.uid,
+              key: data?.id,
+              task:{
+                nome,
+                activity_type: 'Conte as figuras',
+                quantidadeCerta: randomObject.pos,
+                qunatidadeRespondida: randomObject5,
+                acertouQuestao: 'Errada'
+              },
+              created_at: firestore.FieldValue.serverTimestamp()
+            })
+      
+          } catch (error) {
+            console.log(error)
+          }
+          
+        timer = setTimeout(() => {
+            navigation.navigate('Dados Aluno', {data});
+        }, 3000)
+        return;
+    }
+
+    async function respostaCerta(){
+        dispatch(showQuest('Parabéns!', 'sucess'));
+        try {
+            await firestore().collection('tarefas')
+            .add({
+              student: data?.name,
+              owner: user?.uid,
+              key: data?.id,
+              task:{
+                nome,
+                activity_type: 'Conte as figuras',
+                quantidadeCerta: randomObject.pos,
+                qunatidadeRespondida: randomObject.pos,
+                acertouQuestao: 'Certa'
+              },
+              created_at: firestore.FieldValue.serverTimestamp()
+            })
+      
+          } catch (error) {
+            console.log(error)
+          }
+
+        timer = setTimeout(() => {
+            navigation.navigate('Dados Aluno', {data});
+        }, 3000)
+          
+        return;
+    }
+
 
     return (
     <View style={styles.container}>
@@ -96,16 +203,16 @@ export function GameArrastarQuant(){
             hudAleatoria === 0 ? 
             <View style={styles.viewResposta}>
                 <View style={styles.viewRespostax}>
-                        <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 5}</Text>
+                        <TouchableOpacity onPress={() => respostaErrada5()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject5}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 4}</Text>
+                    <TouchableOpacity onPress={() => respostaErrada4()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject4}</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.viewRespostax}>
-                    <TouchableOpacity onPress={() => handleSubmit(shuffle())}style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 1}</Text>
+                    <TouchableOpacity onPress={() => respostaErrada1()}style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject1}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => respostaCerta()} style={styles.buttonResposta}>
                         <Text style={styles.textResponse}>{randomObject.pos}</Text>
@@ -115,19 +222,19 @@ export function GameArrastarQuant(){
             : hudAleatoria === 1 ? 
             <View style={styles.viewResposta}>
                 <View style={styles.viewRespostax}>
-                    <TouchableOpacity onPress={() => handleSubmit(shuffle())}style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 1}</Text>
+                    <TouchableOpacity onPress={() => respostaErrada1()}style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject1}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => respostaCerta()} style={styles.buttonResposta}>
                         <Text style={styles.textResponse}>{randomObject.pos}</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.viewRespostax}>
-                        <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 5}</Text>
+                        <TouchableOpacity onPress={() => respostaErrada5()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject5}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 4}</Text>
+                    <TouchableOpacity onPress={() => respostaErrada4()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject4}</Text>
                     </TouchableOpacity>
                 </View>
             </View> 
@@ -139,16 +246,16 @@ export function GameArrastarQuant(){
                     <TouchableOpacity onPress={() => respostaCerta()} style={styles.buttonResposta}>
                         <Text style={styles.textResponse}>{randomObject.pos}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleSubmit(shuffle())}style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 1}</Text>
+                    <TouchableOpacity onPress={() => respostaErrada1()}style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject1}</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.viewRespostax}>
-                        <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 5}</Text>
+                        <TouchableOpacity onPress={() => respostaErrada5()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject5}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 4}</Text>
+                    <TouchableOpacity onPress={() => respostaErrada4()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject4}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -157,19 +264,19 @@ export function GameArrastarQuant(){
 
             <View style={styles.viewResposta}>
                 <View style={styles.viewRespostax}>
-                    <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 5}</Text>
+                    <TouchableOpacity onPress={() => respostaErrada5()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject5}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleSubmit(shuffle())}style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 1}</Text>
+                    <TouchableOpacity onPress={() => respostaErrada1()}style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject1}</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.viewRespostax}>
                     <TouchableOpacity onPress={() => respostaCerta()} style={styles.buttonResposta}>
                         <Text style={styles.textResponse}>{randomObject.pos}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleSubmit(shuffle())} style={styles.buttonResposta}>
-                        <Text style={styles.textResponse}>{randomObject.pos + 4}</Text>
+                    <TouchableOpacity onPress={() => respostaErrada4()} style={styles.buttonResposta}>
+                        <Text style={styles.textResponse}>{randomObject4}</Text>
                     </TouchableOpacity>
                 </View>
             </View>

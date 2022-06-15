@@ -60,30 +60,32 @@ export function Figuras({ bauX, setContador, data }){
                     <Animated.Image 
                     style={{
                         height: 50,
-                        width: 50
+                        width: 50,
+                        resizeMode: 'contain'
                     }}
                     source={
-                        data?.type === 'Cavalo' ? require('../../assets/Hallowen.png') :
-                        data?.type === 'Bicicleta' ? require('../../assets/joyStick.png') :
-                        data?.type === 'Pinguin' ? require('../../assets/star.png') :
+                        data?.type === 'Cavalo' ? require('../../assets/boneca.png') :
+                        data?.type === 'Bicicleta' ? require('../../assets/carrinho.png') :
+                        data?.type === 'Pinguin' ? require('../../assets/xbox.png') :
                         data?.type === 'Moto' ? require('../../assets/bola.png') :
-                        data?.type === 'Ursinho' ? require('../../assets/jogoBau.png') :
-                        data?.type === 'Ovni' && require('../../assets/jogoMao.png')
+                        data?.type === 'Ursinho' ? require('../../assets/lucasNeto.png') :
+                        data?.type === 'Ovni' && require('../../assets/caminhao.png')
                     } />
                 </Animated.View> : 
                 <Animated.View style={{display: 'none'}}>
                 <Animated.Image 
                 style={{
                     height: 50,
-                    width: 50
+                    width: 50,
+                    resizeMode: 'contain'
                 }}
                 source={
-                    data?.type === 'Cavalo' ? require('../../assets/Hallowen.png') :
-                    data?.type === 'Bicicleta' ? require('../../assets/joyStick.png') :
-                    data?.type === 'Pinguin' ? require('../../assets/star.png') :
+                    data?.type === 'Cavalo' ? require('../../assets/boneca.png') :
+                    data?.type === 'Bicicleta' ? require('../../assets/carrinho.png') :
+                    data?.type === 'Pinguin' ? require('../../assets/xbox.png') :
                     data?.type === 'Moto' ? require('../../assets/bola.png') :
-                    data?.type === 'Ursinho' ? require('../../assets/jogoBau.png') :
-                    data?.type === 'Ovni' && require('../../assets/jogoMao.png')
+                    data?.type === 'Ursinho' ? require('../../assets/lucasNeto.png') :
+                    data?.type === 'Ovni' && require('../../assets/caminhao.png')
                 } />
             </Animated.View>
             }
@@ -98,5 +100,6 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         alignItems: 'center',
         justifyContent: 'center',
+        zIndex: 100
     },
 })

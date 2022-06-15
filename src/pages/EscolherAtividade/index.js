@@ -25,39 +25,19 @@ export default function EscolherAtividade({route}){
   
   const [gameSelected, setGameSelected] = useState('mao');
 
-  function irParaJogo(){
-    if(gameSelected === 'mao'){
-
-    }if(gameSelected === 'bau'){
-      navigation.navigate('Jogo Bau');
-    }if(gameSelected === 'sequencia'){
-      
-    }
-  }
-
   async function handleCreateTask() {
-    try {
-      await firestore().collection('tarefas')
-      .add({
-        student: data?.name,
-        owner: user?.uid,
-        key: data?.id,
-        task:{
-          nome,
-          activity_type: gameSelected,
-          tentativas: 0,
-          acertos: 0,
-          erros: 0
-        },
-        created_at: firestore.FieldValue.serverTimestamp()
-      })
-
-      navigation.goBack();
-
-    } catch (error) {
-      console.log(error)
+    if(gameSelected === 'mao'){
+      navigation.navigate('Jogo Mao', {data, nome});
     }
-    irParaJogo();
+    if(gameSelected === 'bau'){
+      
+      navigation.navigate('Jogo Bau', {data, nome});
+
+    }
+    if(gameSelected === 'sequencia'){
+      navigation.navigate('Game Arrastar', {data, nome});
+    }
+    
   }
 
   return(
@@ -131,10 +111,9 @@ export default function EscolherAtividade({route}){
                 source={require('../../assets/jogoSequencia.png')} 
                 />  
 
-                <Text style={styles.title}>Jogo da Sequência</Text>
+                <Text style={styles.title}>Jogo da Contagem</Text>
                 <Text style={styles.description}>
-                  Jogo da Sequência consiste em arrastar as 
-                  figuras de acordo com a sequência
+                  Jogo da Sequência consiste em contar quantas figuras tem e clicar na resposta correspondente!
                 </Text>
 
             </TouchableOpacity>

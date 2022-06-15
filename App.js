@@ -17,7 +17,7 @@ export default function App(){
         <AuthProvider>
             <Provider store={store}>
               <Quest/>
-              <JogoMao/>
+              <Route/>
             </Provider>
         </AuthProvider>
       </NavigationContainer>
