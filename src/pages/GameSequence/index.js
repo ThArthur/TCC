@@ -76,7 +76,7 @@ export function GameSequence({route}){
                     activity_type: 'Colocar item no baú',
                     quantidadePedida: quantItem,
                     quantidadeColocada: contador,
-                    acertouQuestao: 'Certa'
+                    acertouQuestao: 'Certo'
                   },
                   created_at: firestore.FieldValue.serverTimestamp()
                 })

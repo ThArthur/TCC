@@ -1,41 +1,68 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
-
+import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import moment from 'moment';
 
 
 export default function Aluno({ data }){
     
   const navigation = useNavigation();
+  
+  function handleNavigation() {
+    navigation.navigate('Dados Aluno', { data })
+  }
+
   return(
-    <TouchableOpacity 
-    style={styles.container} 
-    onPress={() => navigation.navigate('Dados Aluno', { data: data })} >
-        <Text style={styles.textAluno}>{data.name}</Text>
-        <FontAwesome style={styles.svg} name='arrow-right' size={15} color="#F92E6A"/>
-    </TouchableOpacity>
-  );
+   <RectButton onPress={handleNavigation} style={styles.container}>
+
+        <Text style={[styles.textName, { fontSize: 20 }]}>{data?.name}</Text>
+
+        <View style={styles.procfile}>
+
+            <Text style={[styles.textName, { fontWeight: 'normal', color: '#3333' }]}>
+                <Text style={{color: '#3333', fontWeight: 'normal'}}>Idade: </Text>
+                {data?.idade}
+                <Text style={{color: '#3333', fontWeight: 'normal'}}> anos</Text>
+            </Text>
+
+            <Text style={[styles.textName, { fontWeight: 'normal', color: '#3333' }]}>
+                <Text style={{color: '#3333', fontWeight: 'normal'}}>Criado em: </Text>
+                {moment(data?.created_at?.seconds * 1000).format('DD/MM/YYYY')}
+            </Text>
+
+
+        </View>
+   </RectButton>
+  )
 }
 
 const styles = StyleSheet.create({
     container:{
-        display: 'flex',
+        backgroundColor: '#FFF',
+        paddingVertical: 15,
+        paddingHorizontal: 15,
+        marginHorizontal: 15,
+        marginBottom: 10,
+    },
+    procfile:{
         flexDirection: 'row',
         alignItems: 'center',
-        borderBottomWidth: .5,
-        height: 50,
         justifyContent: 'space-between'
     },
-    textAluno:{
-        fontSize: 20,
-        paddingLeft: 20,
-        fontWeight: 'bold',
-        color: 'black'
+    procfileItem:{
+        backgroundColor: '#023047',
+        height: 50,
+        width: 50,
+        borderRadius: 25,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
-    svg:{
-        paddingRight: 20,        
+    textName:{
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#023047'
     }
 })

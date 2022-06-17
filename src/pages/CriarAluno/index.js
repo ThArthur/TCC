@@ -9,7 +9,8 @@ import {
   TextInput,
   ActivityIndicator,
   Keyboard,
-  Alert
+  Alert,
+  StatusBar
 } from 'react-native';
 
 import * as Yup from 'yup';
@@ -67,11 +68,9 @@ export default function CriarAluno(){
   }
 
   return(
-    <KeyboardAvoidingView 
-    behavior={Platform.OS === "ios" ? "padding" : "height"} 
-    style={styles.container}
-    >
+    <View style={styles.container}>
       <View style={styles.contentItens}>
+      <StatusBar barStyle={'dark-content'} />
         <Text style={styles.textTittle}>Cadastre o aluno:</Text>
 
         <View style={styles.inputContent}>
@@ -137,7 +136,7 @@ export default function CriarAluno(){
         </TouchableOpacity>
       </View>
 
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

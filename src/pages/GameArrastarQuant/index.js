@@ -80,7 +80,7 @@ export function GameArrastarQuant({route}){
                 nome,
                 activity_type: 'Conte as figuras',
                 quantidadeCerta: randomObject.pos,
-                qunatidadeRespondida: randomObject1,
+                quantidadeRespondida: randomObject1,
                 acertouQuestao: 'Errada'
               },
               created_at: firestore.FieldValue.serverTimestamp()
@@ -108,7 +108,7 @@ export function GameArrastarQuant({route}){
                 nome,
                 activity_type: 'Conte as figuras',
                 quantidadeCerta: randomObject.pos,
-                qunatidadeRespondida: randomObject4,
+                quantidadeRespondida: randomObject4,
                 acertouQuestao: 'Errada'
               },
               created_at: firestore.FieldValue.serverTimestamp()
@@ -137,7 +137,7 @@ export function GameArrastarQuant({route}){
                 nome,
                 activity_type: 'Conte as figuras',
                 quantidadeCerta: randomObject.pos,
-                qunatidadeRespondida: randomObject5,
+                quamtidadeRespondida: randomObject5,
                 acertouQuestao: 'Errada'
               },
               created_at: firestore.FieldValue.serverTimestamp()
@@ -165,8 +165,8 @@ export function GameArrastarQuant({route}){
                 nome,
                 activity_type: 'Conte as figuras',
                 quantidadeCerta: randomObject.pos,
-                qunatidadeRespondida: randomObject.pos,
-                acertouQuestao: 'Certa'
+                quantidadeRespondida: randomObject.pos,
+                acertouQuestao: 'Certo'
               },
               created_at: firestore.FieldValue.serverTimestamp()
             })

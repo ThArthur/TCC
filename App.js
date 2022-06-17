@@ -3,12 +3,10 @@ import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AuthProvider } from './src/context/auth';
 import { Route } from './src/route';
-import { GameArrastarQuant } from './src/pages/GameArrastarQuant';
 import { Provider } from 'react-redux';
 import store from './src/store/index';
 import { Quest } from './src/components/Quest';
-import { GameSequence } from './src/pages/GameSequence';
-import { JogoMao } from './src/pages/JogoMao';
+import { StatusBar } from 'react-native';
 
 export default function App(){
   return(
@@ -17,6 +15,7 @@ export default function App(){
         <AuthProvider>
             <Provider store={store}>
               <Quest/>
+              <StatusBar barStyle={'light-content'} translucent backgroundColor={'transparent'} />
               <Route/>
             </Provider>
         </AuthProvider>

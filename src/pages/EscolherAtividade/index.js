@@ -6,12 +6,14 @@ import {
   TouchableOpacity, 
   Image,
   ScrollView,
-  Alert
+  Alert,
+  StatusBar
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import { useAuth } from '../../context/auth';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 export default function EscolherAtividade({route}){
 
@@ -42,7 +44,9 @@ export default function EscolherAtividade({route}){
 
   return(
     <View style={styles.container}>
+      <StatusBar barStyle='dark-content' />
       <ScrollView
+          contentContainerStyle={{paddingTop: getStatusBarHeight() + 15}}
           showsVerticalScrollIndicator={false}
       >
         <Text style={styles.textTittle}>Escolha a atividade:</Text>

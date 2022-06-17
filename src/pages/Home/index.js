@@ -6,12 +6,14 @@ import { useNavigation } from '@react-navigation/native';
 import Aluno from '../../components/Aluno';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import { AuthContext, useAuth } from '../../context/auth';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import Icon from 'react-native-vector-icons/Feather';
 
 export default function Home(){
 
   const navigation = useNavigation();
 
-  const {handleLogoutAccount} = useContext(AuthContext)
+  const { handleLogoutAccount } = useContext(AuthContext)
   const user  = useAuth();
 
   const [isEmpty, setIsEmpty] = useState(false);
@@ -46,19 +48,44 @@ export default function Home(){
   
   return(
     <View style={styles.container}>
-      <View style={styles.header}>
+
+      <View style={[styles.header, { paddingTop: getStatusBarHeight() + 15 }]}>
         <Text style={styles.headerTittle}>Lista de alunos</Text>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogoutAccounts}>
-          <Text style={styles.logoutText}>Sair</Text>
+
+        <TouchableOpacity onPress={handleLogoutAccounts}>
+          <Icon name="log-out" size={25} color='#FFF' />
         </TouchableOpacity>
       </View>
-      <FlatList
+
+      {alunos.length > 0 ?
+        <FlatList
         data={alunos}
+        contentContainerStyle={{marginTop: 10}}
         renderItem={ ({item}) => <Aluno data={item}/> }
-      />
+        /> :
+        <View style={styles.studentAlready}>
+          <Icon name='archive' size={100} color='#e5e5e5'/>
+
+          <Text style={styles.studentCreateText}>
+            Nenhum aluno ainda criado!{'\n'}
+           
+            <Text 
+            onPress={() => navigation.navigate('Criar aluno')}
+            style={{ 
+              color: '#F92E6A',
+              fontSize: 20,
+              textDecorationLine: 'underline',
+              fontWeight: '500'
+            }}>Criar agora um aluno agora!</Text>
+
+          </Text>
+
+        </View>
+      }
+
       <View style={styles.button}>
         <TouchableOpacity style={styles.svg} onPress={() => navigation.navigate('Criar aluno')}>
-          <FontAwesome name='plus' size={25} color="#FFFFFF"/>
+          <Icon name='plus' size={25} color="#FFFFFF"/>
         </TouchableOpacity>
       </View>
     </View>
@@ -93,20 +120,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
-    backgroundColor: "#F92E6A"
+    paddingBottom: 25,
+    backgroundColor: "#F92E6A",
+    borderBottomEndRadius: 25,
+    borderBottomStartRadius: 25,
   },
   headerTittle:{
     color: '#FFF',
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold'
   },
-  logoutButton:{
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
+  studentAlready:{
+    flex: 2,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  logoutText:{
-    color: '#FFF',
+  studentCreateText:{
+    fontSize: 25,
+    color: '#3333',
+    fontWeight: 'bold',
+    textAlign: 'left',
+    paddingHorizontal: 10,
   }
 })

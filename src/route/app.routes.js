@@ -16,7 +16,7 @@ const AppStack = createNativeStackNavigator();
 
 export default function AppRoute() {
   return (
-      <AppStack.Navigator initialRouteName="Lista de alunos" >
+      <AppStack.Navigator initialRouteName="Lista de alunos" screenOptions={{headerShown: false}}>
         <AppStack.Screen 
         options={{headerShown: false, headerTintColor: '#F92E64'}} 
         name="Lista de alunos" 

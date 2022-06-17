@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TouchableOpacity, StatusBar } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,9 @@ import TarefasAluno from '../../components/TarefasAluno';
 
 import Feather from 'react-native-vector-icons/Feather';
 import { useAuth } from '../../context/auth';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { RectButton } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/Feather';
 
 export default function HomeAluno({ route }){
 
@@ -17,6 +20,12 @@ export default function HomeAluno({ route }){
   const { data } = route.params;
 
   const [tarefas, setTarefas] = useState([]);
+
+  const plural = tarefas.length > 1 ? 'atividades' : tarefas.length == 0 ? 'nenhuma' : 'atividade'
+
+  function handleGoBack() {
+    navigation.goBack()
+  }
 
   useEffect(() => {
     const subscriber = firestore().collection('tarefas')
@@ -38,24 +47,44 @@ export default function HomeAluno({ route }){
 
   return(
     <View style={styles.container}>
-      <Text style={styles.alunoTitulo}>Perfil: {data?.name}</Text>
+      <StatusBar barStyle={'light-content'} />
 
-      <View style={styles.titleView}>
-        <Text style={styles.tarefasTitulo}>Lista de tarefas</Text>
-        <TouchableOpacity style={styles.plusButton} onPress={() => navigation.navigate("Criar atividade", { data })}>
-          <Feather name='plus' size={25} color="#FFFFFF"/>
-        </TouchableOpacity>
+      <View style={[styles.header, { paddingTop: getStatusBarHeight() + 15 }]}>
+        <RectButton onPress={handleGoBack}>
+          <Icon name="arrow-left" size={25} color="#FFF" />
+        </RectButton>
+        <Text style={styles.textHeaderStudent}>{data?.name}</Text>
       </View>
 
+      <View style={styles.headerFlatlist}>
+          <Text style={styles.textHeaderFlatList}>Este aluno contém {tarefas.length} {plural}!</Text>
+      </View>
+
+      {tarefas.length > 0 &&
       <FlatList
         data={tarefas}
+        contentContainerStyle={{marginTop: 10}}
         renderItem={ ({item}) => <TarefasAluno data={item}/> }
         keyExtractor={item => item.id}
       />
-      <TouchableOpacity style={styles.relatorioGeral} 
-      onPress={() => navigation.navigate('Relatório Geral', { data: tarefas })}>
-        <Text style={styles.textGerarRelatorio}>Gerar Relatório Geral</Text>
-      </TouchableOpacity>
+      }
+
+      <View style={styles.buttons}>
+        <TouchableOpacity 
+        style={styles.relatorioGeral} 
+        onPress={() => navigation.navigate('Relatório Geral', { data: tarefas })}
+        >
+          <Text style={styles.textGerarRelatorio}>Relatório Geral</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+        style={[styles.relatorioGeral, { marginLeft: 15, backgroundColor: '#06d6a0' }]} 
+        onPress={() => navigation.navigate('Criar atividade', { data })}
+        >
+          <Text style={styles.textGerarRelatorio}>Criar atividade</Text>
+        </TouchableOpacity>
+
+      </View>
     </View>
   );
 }
@@ -66,47 +95,65 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tarefasTitulo:{
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#F92E6A',
   },
   titleView:{
-    borderBottomWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginTop: 15,
     paddingHorizontal: 15,
-    paddingVertical: 15,
   },
   plusButton:{
-    height: 50,
-    width: 50,
     backgroundColor: '#F92E6A',
-    borderRadius: 35,
+    padding: 5,
+    borderRadius: 2,
+  },
+  textAtivity:{
+    fontSize: 17,
+    fontWeight: '500',
+    color: "#FFF",
+  },
+  buttons:{
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 15,
   },
   relatorioGeral:{
-    borderWidth: 2,
-    borderColor: '#F92E6A',
-    marginLeft: 40,
-    marginRight: 40,
-    display: 'flex',
+    backgroundColor: '#F92E6A',
     alignItems: 'center',
-    marginBottom: 20,
-    height: 50,
     justifyContent: 'center',
-    borderRadius: 10,
+    height: 50,
+    width: '45%',
   },
   textGerarRelatorio:{
-    fontSize: 20,
-    color: '#000000',
+    fontSize: 17,
+    color: '#FFF',
+    fontWeight: 'bold',
   },
-  alunoTitulo:{
+  header:{
+    backgroundColor: '#F92E6A',
+    paddingBottom: 15,
+    paddingHorizontal: 15,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  textHeaderStudent:{
     fontSize: 20,
-    marginLeft: 20,
-    marginRight: 20,
-    paddingTop: 20,
-    color: '#000000',
+    fontWeight: 'bold',
+    color: '#FFF',
+    marginLeft: 15,
+  },
+  headerFlatlist:{
+    paddingHorizontal: 15,
+    marginTop: 15,
+  },
+  textHeaderFlatList:{
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#3333'
   }
 })
