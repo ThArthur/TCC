@@ -72,7 +72,7 @@ export default function HomeAluno({ route }){
       <View style={styles.buttons}>
         <TouchableOpacity 
         style={styles.relatorioGeral} 
-        onPress={() => navigation.navigate('Relatório Geral', { data: tarefas })}
+        onPress={() => navigation.navigate('EscolherRelatorioGeral', { data: tarefas })}
         >
           <Text style={styles.textGerarRelatorio}>Relatório Geral</Text>
         </TouchableOpacity>

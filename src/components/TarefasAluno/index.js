@@ -12,7 +12,7 @@ const VALUE = -width
 
 export default function TarefasAluno({ data }){
 
-  console.log(data)
+  const navigation = useNavigation();
   
   const dateFormatted = moment(data?.created_at?.seconds * 1000).format('DD/MM/YYYY');
 
@@ -42,66 +42,69 @@ export default function TarefasAluno({ data }){
 
   return(
     <Animated.View style={[styles.container, translateStyle]}>
-
-        <View style={styles.header}>
-            <View>
-                <Text style={styles.title}>{data?.task?.nome}</Text>
-                <Text style={styles.activity_type}>Atividade: {data?.task?.activity_type}</Text>
-            </View>
-
-            <View style={[styles.correctActivity, {
-                backgroundColor: data?.task?.acertouQuestao === 'Certo' ? '#06d6a0' : '#F92E6A'
-            }]}>
-                <Text style={[styles.titleHeader]}>
-                    {data?.task?.acertouQuestao === 'Certa' ? `Nota ${progressTotal}` : `Nota ${progressTotal}`}
-                </Text>
-            </View> 
-        </View>
-
-        <View style={styles.statusStudent}>
-
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text>Progresso: </Text>
-                <ProgressRadius size={25} color={"#06d6a0"} percentage={progress}/>
-                <Text> {progress}%</Text>
-            </View>
+        <TouchableOpacity onPress={() => navigation.navigate('Relatório', {data})}>
             
+            <View style={styles.header}>
+                <View>
+                    <Text style={styles.title}>{data?.task?.nome}</Text>
+                    <Text style={styles.activity_type}>Atividade: {data?.task?.activity_type}</Text>
+                </View>
+
+                <View style={[styles.correctActivity, {
+                    backgroundColor: data?.task?.acertouQuestao === 'Certo' ? '#06d6a0' : '#F92E6A'
+                }]}>
+                    <Text style={[styles.titleHeader]}>
+                        {data?.task?.acertouQuestao === 'Certa' ? `Nota ${progressTotal}` : `Nota ${progressTotal}`}
+                    </Text>
+                </View> 
+            </View>
+
+            <View style={styles.statusStudent}>
+
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text>Progresso: </Text>
+                    <ProgressRadius size={25} color={"#06d6a0"} percentage={progress}/>
+                    <Text> {progress}%</Text>
+                </View>
+                
+                {data?.task?.activity_type === 'Colocar item no baú' ?
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text>Quantidade exigida:</Text>
+                        <Text> {data?.task?.quantidadePedida}</Text>
+                    </View>
+                : data?.task?.activity_type === 'Conte as figuras' ?
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text>Quantidade exigida:</Text>
+                        <Text> {data?.task?.quantidadeCerta}</Text>
+                    </View>
+                : data?.task?.activity_type === 'Somar ou subtrair' &&
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text>Resultado da operação:</Text>
+                        <Text> {data?.task?.resultadoDaOperacao}</Text>
+                    </View>
+                }
+            </View>
+
             {data?.task?.activity_type === 'Colocar item no baú' ?
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text>Quantidade exigida:</Text>
-                    <Text> {data?.task?.quantidadePedida}</Text>
+                    <Text>Quantidade colocada:</Text>
+                    <Text> {data?.task?.quantidadeColocada}</Text>
                 </View>
-            : data?.task?.activity_type === 'Conte as figuras' ?
+            : data?.task?.activity_type === 'Conte as figuras' ? 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text>Quantidade exigida:</Text>
-                    <Text> {data?.task?.quantidadeCerta}</Text>
+                    <Text>Quantidade colocada:</Text>
+                    <Text> {data?.task?.quantidadeRespondida}</Text>
                 </View>
-            : data?.task?.activity_type === 'Somar ou subtrair' &&
+            : data?.task?.activity_type === 'Somar ou subtrair' && 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text>Resultado da operação:</Text>
-                    <Text> {data?.task?.resultadoDaOperacao}</Text>
+                    <Text>Resultado colocado:</Text>
+                    <Text> {data?.task?.resultadoColocado}</Text>
                 </View>
             }
-        </View>
 
-        {data?.task?.activity_type === 'Colocar item no baú' ?
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text>Quantidade colocada:</Text>
-                <Text> {data?.task?.quantidadeColocada}</Text>
-            </View>
-        : data?.task?.activity_type === 'Conte as figuras' ? 
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text>Quantidade colocada:</Text>
-                <Text> {data?.task?.quantidadeRespondida}</Text>
-            </View>
-        : data?.task?.activity_type === 'Somar ou subtrair' && 
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text>Resultado colocado:</Text>
-                <Text> {data?.task?.resultadoColocado}</Text>
-            </View>
-        }
-
-        <Text style={styles.dateCreated}>Data de criação: {dateFormatted}</Text>
+            <Text style={styles.dateCreated}>Data de criação: {dateFormatted}</Text>
+        
+        </TouchableOpacity>
     </Animated.View>
   );
 }

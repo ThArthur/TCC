@@ -322,7 +322,10 @@ const styles = StyleSheet.create({
     },
     numaration:{
         flexWrap: 'wrap',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: 150,
+        height: 330,
+        justifyContent: 'center',
     },
     numberStyle:{
         alignItems: 'center',

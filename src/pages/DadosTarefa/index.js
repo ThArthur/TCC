@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
-
-import TarefasAluno from '../../components/TarefasAluno';
-
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import Icon from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
 
 export default function DadosTarefas({ route }){
+
+  const navigate = useNavigation();
 
   const { data } = route.params;
 
   return(
     <View style={styles.container}>
+      <View style={[styles.header, { paddingTop: getStatusBarHeight() + 15 }]}>
+
+        <TouchableOpacity onPress={() => navigate.goBack()}>
+          <Icon name="arrow-left" size={25} color='#FFF' />
+        </TouchableOpacity>
+
+        <Text style={styles.headerTittle}>Relatório da tarefa</Text>
+
+        
+      </View>
       {
       data.task.activity_type === 'Somar ou subtrair' ? 
         <View style={styles.containerInfos}>
@@ -52,7 +63,7 @@ export default function DadosTarefas({ route }){
           </View>
           <View style={styles.linhaDado}>
               <Text style={styles.opcao}>Quantidade respondida: </Text>
-              <Text style={styles.opcaoResp}>{data?.task?.qunatidadeRespondida}</Text>
+              <Text style={styles.opcaoResp}>{data?.task?.quantidadeRespondida}</Text>
           </View><View style={styles.linhaDado}>
               <Text style={styles.opcao}>Status da atividade: </Text>
               <Text style={styles.opcaoResp}>{data?.task?.acertouQuestao}</Text>
@@ -90,7 +101,6 @@ const styles = StyleSheet.create({
   container:{
     display: 'flex',
     flex: 1,
-    alignItems: 'center'
   },
   titulo:{
       fontSize: 35,
@@ -116,6 +126,21 @@ const styles = StyleSheet.create({
   opcaoResp:{
     fontSize: 20,
     color: '#000',
+    fontWeight: 'bold'
+  },
+  header:{
+    flexDirection: 'row',
+    paddingHorizontal: 25,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 25,
+    backgroundColor: "#F92E6A",
+    borderBottomEndRadius: 25,
+    borderBottomStartRadius: 25,
+  },
+  headerTittle:{
+    color: '#FFF',
+    fontSize: 25,
     fontWeight: 'bold'
   },
 })

@@ -11,6 +11,7 @@ import EscolherAtividade from '../pages/EscolherAtividade';
 import { GameSequence } from '../pages/GameSequence';
 import { GameArrastarQuant } from '../pages/GameArrastarQuant';
 import { JogoMao } from '../pages/JogoMao';
+import EscolherRelatorioGeral from '../pages/EscolherRelatorioGeral';
 
 const AppStack = createNativeStackNavigator();
 
@@ -35,7 +36,7 @@ export default function AppRoute() {
         />
 
         <AppStack.Screen 
-        options={{headerTintColor: '#F92E64',}} 
+        options={{headerTintColor: '#F92E64'}} 
         name="Relatório Geral" 
         component={RelatorioGeral} 
         />
@@ -74,6 +75,12 @@ export default function AppRoute() {
         options={{headerShown: false, headerTintColor: '#F92E64',}} 
         name="Jogo Mao" 
         component={JogoMao} 
+        />
+
+        <AppStack.Screen 
+        options={{ headerTintColor: '#F92E64',}} 
+        name="EscolherRelatorioGeral" 
+        component={EscolherRelatorioGeral} 
         />
 
       </AppStack.Navigator>

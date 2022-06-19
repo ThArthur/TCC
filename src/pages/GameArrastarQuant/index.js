@@ -43,12 +43,14 @@ const arrayObject = [
     },
 ]
 
-const randomObject = arrayObject[Math.floor(Math.random() * arrayObject.length)];
-const randomObject5 = randomObject.pos + 5;
-const randomObject4 = randomObject.pos + 4;
-const randomObject1 = randomObject.pos + 1;
+
 
 export function GameArrastarQuant({route}){
+
+    let randomObject = arrayObject[Math.floor(Math.random() * arrayObject.length)];
+    let randomObject5 = randomObject.pos + 5;
+    let randomObject4 = randomObject.pos + 4;
+    let randomObject1 = randomObject.pos + 1;
 
     const navigation = useNavigation();
 

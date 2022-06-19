@@ -1,59 +1,62 @@
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import TarefasAluno from '../../components/TarefasAluno';
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function RelatorioGeral({route}){
 
+  const navigation = useNavigation();
+
   const {
-    data
+    data,
+    relatorioGeral
   } = route.params;
 
-  function totalAcertos() {
-    let acertos = 0;
-    let tentativas = 0;
-    let erros = 0;
-    for(let i = 0; i < data.length; i++) {
-      acertos += data[i]?.task?.acertos;
-      tentativas += data[i]?.task?.tentativas;
-      erros += data[i]?.task?.erros;
+  const [listaTarefasE, setListaTarefasE] = useState([]);
+
+  useEffect(() => {
+    const listTask = [];
+    for(var i = 0; i < data.length; i++){
+      if(data[i].task.activity_type == relatorioGeral){
+        listTask.push({
+          id: i,
+          ...data[i]
+        })
+      }
     }
 
-    return { acertos, tentativas, erros }
-  }
+    setListaTarefasE(listTask)
 
-
-  const tarefas = 
-    {
-      tentativas: totalAcertos().tentativas,
-      acertos: totalAcertos().acertos,
-      erros: totalAcertos().erros,
-      acertoPorc: '65%',
-      erroPorc: '35%',
+    for(var i = 0; i < listaTarefasE; i++){
+      if(listaTarefasE[i].task.acertouQuestao == "Certo"){
+        setCerto((currentCount) => currentCount + 1);
+      }
     }
+
+    setListaTarefasE(listTask);
+
+  }, []);
 
   return(
     <View style={styles.container}>
-        <Text style={styles.titulo}>Relatório geral</Text>
-        <View style={styles.linhaDado}>
-            <Text style={styles.opcao}>Tentativas: </Text>
-            <Text style={styles.opcao}>{tarefas.tentativas}</Text>
-        </View>
-        <View style={styles.linhaDado}>
-            <Text style={styles.opcao}>Acertos: </Text>
-            <Text style={styles.opcao}>{tarefas.acertos}</Text>
-        </View>
-        <View style={styles.linhaDado}>
-            <Text style={styles.opcao}>Erros: </Text>
-            <Text style={styles.opcao}>{tarefas.erros}</Text>
-        </View>
-        <View style={styles.linhaDado}>
-            <Text style={styles.opcao}>Acertos(%): </Text>
-            <Text style={styles.opcao}>{tarefas.acertoPorc}</Text>
-        </View>
-        <View style={styles.linhaDado}>
-            <Text style={styles.opcao}>Erros(%): </Text>
-            <Text style={styles.opcao}>{tarefas.erroPorc}</Text>
-        </View>
+      <View style={[styles.header, { paddingTop: getStatusBarHeight() + 15 }]}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-left" size={25} color='#FFF' />
+        </TouchableOpacity>
+
+        <Text style={styles.headerTittle}>Relatório geral</Text>
+      </View>
+      {listaTarefasE.length > 0 &&
+      <FlatList
+        data={listaTarefasE}
+        contentContainerStyle={{marginTop: 10}}
+        renderItem={ ({item}) => <TarefasAluno data={item}/> }
+        keyExtractor={item => item.id}
+      />
+      }
     </View>
   );
 }
@@ -62,8 +65,6 @@ const styles = StyleSheet.create({
   container:{
     display: 'flex',
     flex: 1,
-    paddingLeft: 20,
-    paddingRight: 20,
   },
   titulo:{
       fontSize: 30,
@@ -83,5 +84,22 @@ const styles = StyleSheet.create({
   opcao:{
       fontSize: 20,
       color: '#000',
-  }
+  },
+  header:{
+    flexDirection: 'row',
+    paddingHorizontal: 25,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingBottom: 15,
+    backgroundColor: "#F92E6A",
+    borderBottomEndRadius: 25,
+    borderBottomStartRadius: 25,
+    marginBottom: 20
+  },
+  headerTittle:{
+    color: '#FFF',
+    fontSize: 25,
+    fontWeight: 'bold',
+    paddingLeft: 20
+  },
 })
